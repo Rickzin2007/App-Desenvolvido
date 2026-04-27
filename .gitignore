@@ -1,0 +1,17 @@
+# FRONT
+node_modules/
+.expo/
+dist/
+build/
+
+# BACK
+venv/
+__pycache__/
+*.pyc
+
+# SEGURANÇA
+.env
+cred.json
+
+# OUTROS
+temp_upload/
