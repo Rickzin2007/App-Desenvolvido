@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiFetch } from '../../services/api';
 import { theme } from '../../constants/theme';
 
+
 type MetaItem = {
   id: number;
   objetivo: string;
@@ -44,7 +45,12 @@ function pegarIdMeta(meta: any) {
 }
 
 export default function MetasScreen() {
-  const router = useRouter();
+  
+  const router = useRouter(); // Coloque isso antes do useEffect
+
+  useEffect(() => {
+  carregarMetas();
+}, []);// Agora estamos usando 'router.route', que é a propriedade correta no Expo Router // Agora estamos usando pathname, que é a propriedade correta  // Agora está no lugar correto
 
   const [menuAberto, setMenuAberto] = useState(false);
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -221,7 +227,11 @@ export default function MetasScreen() {
         resposta?.meta?.id_meta;
 
       if (idCriado) {
-        await salvarDescricaoLocal(idCriado, descricao.trim());
+        // Adiciona a meta recém-criada no AsyncStorage
+        const metasSalvas = await AsyncStorage.getItem('metas_concluidas');
+        const novasMetas = metasSalvas ? JSON.parse(metasSalvas) : [];
+        novasMetas.push(idCriado); // Adiciona a nova meta ao array de metas salvas
+        await AsyncStorage.setItem('metas_concluidas', JSON.stringify(novasMetas));
       }
 
       setObjetivo('');
@@ -354,7 +364,7 @@ export default function MetasScreen() {
             </View>
 
             <Text style={styles.listTitle}>Listagem de metas 🎯</Text>
-
+        
             <View style={styles.listBox}>
               {metas.length === 0 ? (
                 <View style={styles.emptyCard}>
